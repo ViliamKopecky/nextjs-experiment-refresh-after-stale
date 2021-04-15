@@ -1,27 +1,22 @@
-# NextJS Typescript Boilerplate
+# NextJS: refreshing props after expired cache
 
-Bootstrap a developer-friendly NextJS app configured with:
+Based on the [examples/with-typescript-eslint-jest](https://github.com/vercel/next.js/tree/canary/examples/with-typescript-eslint-jest)
 
-- [Typescript](https://www.typescriptlang.org/)
-- Linting with [ESLint](https://eslint.org/)
-- Formatting with [Prettier](https://prettier.io/)
-- Linting, typechecking and formatting on by default using [`husky`](https://github.com/typicode/husky) for commit hooks
-- Testing with [Jest](https://jestjs.io/) and [`react-testing-library`](https://testing-library.com/docs/react-testing-library/intro)
+Demo: https://nextjs-experiment-refresh-after-stale.vercel.app
 
-## Deploy your own
+## What is happening
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
+- You load the page
+- Page provides you always with fast cached data. *(always except the very first load)*
+- If the provided props are older than 10 seconds, `_app.tsx` will trigger AJAX request to load fresh props.
+- Freshly loaded props are swapped for the page `Component`
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-typescript-eslint-jest&project-name=with-typescript-eslint-jest&repository-name=with-typescript-eslint-jest)
+## Where the magic happens
 
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-typescript-eslint-jest with-typescript-eslint-jest-app
-# or
-yarn create next-app --example with-typescript-eslint-jest with-typescript-eslint-jest-app
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+- `pages/_app_.tsx`
+    - using caching utils
+- `pages/index.tsx`
+    - `loadProps` takes long 5 seconds to load
+    - providing cached version of `loadProps`
+- `utils/propsMemory.ts`
+    - there are caching utils with 10 seconds expiration
